@@ -13,7 +13,7 @@ import {z} from 'genkit';
 const ContextAwareHelpCenterInputSchema = z.object({
   locale: z
     .string()
-    .describe('The user\u2019s locale, e.g., en-US, de-DE, fr-CA.'),
+    .describe('The user’s locale, e.g., en-US, de-DE, fr-CA.'),
 });
 export type ContextAwareHelpCenterInput = z.infer<
   typeof ContextAwareHelpCenterInputSchema
@@ -24,7 +24,7 @@ const ContextAwareHelpCenterOutputSchema = z.object({
     .string()
     .url()
     .describe(
-      'A URL pointing to a help center page tailored to the user\u2019s locale and relevant regional policies.'
+      'A URL pointing to a help center page tailored to the user’s locale and relevant regional policies.'
     ),
 });
 export type ContextAwareHelpCenterOutput = z.infer<
@@ -41,14 +41,14 @@ const prompt = ai.definePrompt({
   name: 'contextAwareHelpCenterPrompt',
   input: {schema: ContextAwareHelpCenterInputSchema},
   output: {schema: ContextAwareHelpCenterOutputSchema},
-  prompt: `You are an expert in international data storage policies. Given the user's locale, provide a Help Center link that is relevant to the user and explains any regional policies about data storage that may be relevant.
+  prompt: `Given the user's locale, provide a Help Center link that is relevant to the user and their region.
 
 Locale: {{{locale}}}
 
 If the locale is en-US, the help center link is https://example.com/en-us/help.
 If the locale is de-DE, the help center link is https://example.com/de-de/help.
 If the locale is fr-CA, the help center link is https://example.com/fr-ca/help.
-If the locale is en-GB, and you should mention GDPR policies, the help center link is https://example.com/en-gb/help.
+If the locale is en-GB, the help center link is https://example.com/en-gb/help.
 
 Otherwise, if the locale is not listed, provide a link to the generic help center: https://example.com/help.
 `,

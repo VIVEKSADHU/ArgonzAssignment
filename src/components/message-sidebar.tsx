@@ -52,7 +52,7 @@ export function MessageSidebar() {
         </div>
         <h3 className="font-bold">Help Center</h3>
         <p className="text-sm text-gray-300 mt-1 mb-3">
-          Having Trouble in Learning. Please contact us for more questions.
+          Need assistance? Our support team is here to help with any questions.
         </p>
         <Button
           variant="secondary"
