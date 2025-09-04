@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Bell } from 'lucide-react';
 
@@ -118,8 +119,32 @@ export default function SettingsPage() {
                   Manage your notification preferences.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <p>Notification settings will be here.</p>
+              <CardContent className="space-y-8">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="message-notifications">Message</Label>
+                    <Switch id="message-notifications" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="task-update-notifications">
+                      Task Update
+                    </Label>
+                    <Switch id="task-update-notifications" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="task-deadline-notifications">
+                      Task Deadline
+                    </Label>
+                    <Switch id="task-deadline-notifications" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="mentor-help-notifications">
+                      Mentor Help
+                    </Label>
+                    <Switch id="mentor-help-notifications" />
+                  </div>
+                </div>
+                <Button>Save Changes</Button>
               </CardContent>
             </Card>
           </TabsContent>
