@@ -8,6 +8,10 @@ import {
   Clock,
   Hourglass,
   Palette,
+  MessageSquare,
+  ClipboardList,
+  CalendarClock,
+  UserCheck,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -32,6 +36,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HelpCenterLink } from "@/components/help-center-link";
+import { Switch } from "@/components/ui/switch";
 
 const languages = [
   { value: "en", label: "English" },
@@ -60,23 +65,37 @@ type Settings = {
   timeFormat: "12h" | "24h";
 };
 
-const defaultSettings: Settings = {
+type NotificationSettings = {
+  message: boolean;
+  taskUpdate: boolean;
+  taskDeadline: boolean;
+  mentorHelp: boolean;
+};
+
+
+const defaultSettings: Settings & { notifications: NotificationSettings } = {
   language: "en",
   timezone: "America/New_York",
   timeFormat: "12h",
+  notifications: {
+    message: true,
+    taskUpdate: false,
+    taskDeadline: true,
+    mentorHelp: false,
+  }
 };
 
 export function SettingsForm() {
   const { toast } = useToast();
   const [isMounted, setIsMounted] = useState(false);
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [settings, setSettings] = useState<Settings & { notifications: NotificationSettings }>(defaultSettings);
   
   useEffect(() => {
     const storedSettings = localStorage.getItem("configureYouSettings");
     if (storedSettings) {
       try {
         const parsedSettings = JSON.parse(storedSettings);
-        setSettings(parsedSettings);
+        setSettings(prev => ({ ...prev, ...parsedSettings }));
         document.documentElement.lang = parsedSettings.language || "en";
       } catch (error) {
         console.error("Failed to parse settings from localStorage", error);
@@ -96,6 +115,16 @@ export function SettingsForm() {
 
   const handleSettingsChange = (key: keyof Settings, value: string) => {
      setSettings((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleNotificationChange = (key: keyof NotificationSettings, value: boolean) => {
+    setSettings((prev) => ({
+      ...prev,
+      notifications: {
+        ...prev.notifications,
+        [key]: value,
+      },
+    }));
   };
 
   if (!isMounted) {
@@ -159,7 +188,7 @@ export function SettingsForm() {
               <Label className="flex items-center"><Hourglass className="inline-block mr-2 h-4 w-4 text-primary" /> Time Format</Label>
               <RadioGroup
                 value={settings.timeFormat}
-                onValueChange={(value) => handleSettingsChange("timeFormat", value)}
+                onValueChange={(value) => handleSettingsChange("timeFormat", value as "12h" | "24h")}
                 className="flex items-center space-x-4 pt-2"
               >
                 <div className="flex items-center space-x-2">
@@ -181,11 +210,50 @@ export function SettingsForm() {
               Manage how you receive notifications.
             </CardDescription>
           </CardHeader>
-          <CardContent className="font-body">
-            <div className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed rounded-lg bg-muted/50 h-64">
-                <Bell className="h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground font-medium">Coming Soon</p>
-                <p className="text-muted-foreground text-sm">Notification settings will be available in a future update.</p>
+          <CardContent className="space-y-6 font-body">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="message-notifications" className="flex items-center cursor-pointer">
+                <MessageSquare className="inline-block mr-3 h-5 w-5 text-primary" />
+                Message
+              </Label>
+              <Switch
+                id="message-notifications"
+                checked={settings.notifications.message}
+                onCheckedChange={(value) => handleNotificationChange("message", value)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="task-update-notifications" className="flex items-center cursor-pointer">
+                <ClipboardList className="inline-block mr-3 h-5 w-5 text-primary" />
+                Task Update
+              </Label>
+              <Switch
+                id="task-update-notifications"
+                checked={settings.notifications.taskUpdate}
+                onCheckedChange={(value) => handleNotificationChange("taskUpdate", value)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="task-deadline-notifications" className="flex items-center cursor-pointer">
+                <CalendarClock className="inline-block mr-3 h-5 w-5 text-primary" />
+                Task Deadline
+              </Label>
+              <Switch
+                id="task-deadline-notifications"
+                checked={settings.notifications.taskDeadline}
+                onCheckedChange={(value) => handleNotificationChange("taskDeadline", value)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="mentor-help-notifications" className="flex items-center cursor-pointer">
+                <UserCheck className="inline-block mr-3 h-5 w-5 text-primary" />
+                Mentor Help
+              </Label>
+              <Switch
+                id="mentor-help-notifications"
+                checked={settings.notifications.mentorHelp}
+                onCheckedChange={(value) => handleNotificationChange("mentorHelp", value)}
+              />
             </div>
           </CardContent>
         </TabsContent>
